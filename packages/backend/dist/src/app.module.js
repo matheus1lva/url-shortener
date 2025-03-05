@@ -11,7 +11,6 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const url_module_1 = require("./url/url.module");
 const database_module_1 = require("./database/database.module");
-const url_controller_1 = require("./url/url.controller");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -24,7 +23,7 @@ exports.AppModule = AppModule = __decorate([
             database_module_1.DatabaseModule,
             url_module_1.UrlModule,
         ],
-        controllers: [url_controller_1.UrlController],
+        controllers: [],
         providers: [],
     })
 ], AppModule);

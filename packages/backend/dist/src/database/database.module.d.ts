@@ -1,8 +1,7 @@
-import { OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import { OnApplicationShutdown } from '@nestjs/common';
 import { Pool } from 'pg';
-export declare class DatabaseModule implements OnModuleInit, OnModuleDestroy {
-    private readonly client;
-    constructor(client: Pool);
-    onModuleInit(): Promise<void>;
-    onModuleDestroy(): Promise<void>;
+export declare class DatabaseModule implements OnApplicationShutdown {
+    private readonly pool;
+    constructor(pool: Pool);
+    onApplicationShutdown(): Promise<void>;
 }

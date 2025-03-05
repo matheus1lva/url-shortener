@@ -1,23 +1,39 @@
+import { useMutation } from "@tanstack/react-query";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { createShortUrl } from "../services/api";
+import UrlResult from "./UrlResult";
 
-interface UrlFormProps {
-  onSuccess: (shortUrl: string, originalUrl: string, slug: string) => void;
-}
-
-export default function UrlForm({ onSuccess }: UrlFormProps) {
+export default function UrlForm({
+  toggleViewDetails,
+}: {
+  toggleViewDetails: () => void;
+}) {
   const [url, setUrl] = useState("");
   const [customSlug, setCustomSlug] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showCustomSlug, setShowCustomSlug] = useState(false);
+  const [showQueryDetails, setShowQueryDetails] = useState(false);
+
+  const { isPending, mutate, data } = useMutation({
+    mutationFn: (data: { originalUrl: string; customSlug?: string }) =>
+      createShortUrl(data.originalUrl, data.customSlug),
+    onSuccess: () => {
+      setUrl("");
+      setCustomSlug("");
+      setShowCustomSlug(false);
+    },
+    onError: (error) => {
+      setError(error.message);
+    },
+  });
+
+  const isSubmitting = isPending;
 
   const isValidUrl = (urlString: string): boolean => {
     try {
       new URL(urlString);
       return true;
-    } catch (_err) {
-      console.error(_err);
+    } catch {
       return false;
     }
   };
@@ -36,18 +52,21 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const result = await createShortUrl(url, customSlug || undefined);
-      onSuccess(result.shortUrl, result.originalUrl, result.slug);
-      setUrl("");
-      setCustomSlug("");
-      setShowCustomSlug(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setIsLoading(false);
+    mutate({
+      originalUrl: url,
+      customSlug: customSlug || undefined,
+    });
+  };
+
+  const toggleCustomSlug = () => {
+    setShowCustomSlug(!showCustomSlug);
+    if (showQueryDetails) {
+      setShowQueryDetails(false);
     }
+  };
+
+  const toggleQueryDetails = () => {
+    toggleViewDetails();
   };
 
   return (
@@ -101,13 +120,20 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
           />
         </div>
 
-        <div className="mb-2">
+        <div className="flex justify-between mb-2">
           <button
             type="button"
-            onClick={() => setShowCustomSlug(!showCustomSlug)}
+            onClick={toggleCustomSlug}
             className="text-sm text-blue-600 hover:underline"
           >
             {showCustomSlug ? "Use random slug" : "Customize slug"}
+          </button>
+          <button
+            type="button"
+            onClick={toggleQueryDetails}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Query URL Details
           </button>
         </div>
 
@@ -139,13 +165,17 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
 
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className={`w-full px-4 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
-            ${isLoading ? "opacity-75 cursor-not-allowed" : ""}`}
+              ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
         >
-          {isLoading ? "Processing..." : "Shorten"}
+          {isSubmitting ? "Processing..." : "Shorten"}
         </button>
       </form>
+
+      {data?.shortUrl && (
+        <UrlResult shortUrl={data.shortUrl} originalUrl={data.originalUrl} />
+      )}
     </div>
   );
 }

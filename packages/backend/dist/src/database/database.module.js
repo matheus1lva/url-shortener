@@ -18,15 +18,17 @@ const config_1 = require("@nestjs/config");
 const pg_1 = require("pg");
 const database_provider_1 = require("./database.provider");
 let DatabaseModule = class DatabaseModule {
-    client;
-    constructor(client) {
-        this.client = client;
+    pool;
+    constructor(pool) {
+        this.pool = pool;
     }
-    async onModuleInit() {
-        await this.client.connect();
-    }
-    async onModuleDestroy() {
-        await this.client.end();
+    async onApplicationShutdown() {
+        try {
+            await this.pool.end();
+        }
+        catch (e) {
+            console.error(e);
+        }
     }
 };
 exports.DatabaseModule = DatabaseModule;

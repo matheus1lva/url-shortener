@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/v1";
 
 interface CreateUrlResponse {
   originalUrl: string;
@@ -15,7 +15,7 @@ export const createShortUrl = async (
   originalUrl: string,
   customSlug?: string
 ): Promise<CreateUrlResponse> => {
-  const response = await fetch(`${API_URL}/api/shorten`, {
+  const response = await fetch(`${API_URL}/shorten`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -34,7 +34,7 @@ export const createShortUrl = async (
 export const getUrlDetails = async (
   slug: string
 ): Promise<UrlDetailsResponse> => {
-  const response = await fetch(`${API_URL}/api/url/${slug}`);
+  const response = await fetch(`${API_URL}/shorten/${slug}/details`);
 
   if (!response.ok) {
     const errorData = await response.json();
