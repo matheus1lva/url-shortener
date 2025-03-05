@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Url, UrlInsert, urlTable } from 'schema';
-import { DATABASE_PROVIDER, Database } from 'src/database/database.provider';
+import { Url, UrlInsert, urlTable } from '../../schema';
+import { DATABASE_PROVIDER, Database } from '@/database/database.provider';
 import { eq } from 'drizzle-orm';
 
 @Injectable()

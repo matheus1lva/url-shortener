@@ -1,5 +1,5 @@
-import { Url, UrlInsert } from 'schema';
-import { Database } from 'src/database/database.provider';
+import { Url, UrlInsert } from '../../schema';
+import { Database } from '@/database/database.provider';
 export declare class UrlRepository {
     private readonly database;
     constructor(database: Database);

@@ -16,7 +16,8 @@ export default function UrlForm({ onSuccess }: UrlFormProps) {
     try {
       new URL(urlString);
       return true;
-    } catch (err) {
+    } catch (_err) {
+      console.error(_err);
       return false;
     }
   };
