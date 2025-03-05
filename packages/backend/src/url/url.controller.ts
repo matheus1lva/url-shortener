@@ -31,7 +31,7 @@ export class UrlController {
     const url = await this.urlService.createShortUrl(createUrlDto);
     return {
       originalUrl: url.originalUrl,
-      shortUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/shorten/${url.slug}`,
+      shortUrl: `/shorten/${url.slug}`,
       slug: url.slug,
     };
   }

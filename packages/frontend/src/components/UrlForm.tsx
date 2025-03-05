@@ -3,16 +3,37 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { createShortUrl } from "../services/api";
 import UrlResult from "./UrlResult";
 
-export default function UrlForm({
-  toggleViewDetails,
-}: {
+const Header = () => (
+  <div className="flex items-center mb-4">
+    <h2 className="text-2xl font-bold text-gray-800">URL Shortener</h2>
+    <svg
+      className="w-6 h-6 ml-2 text-blue-500"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M13 7L11.168 4.252C10.283 2.907 8.155 2.977 7.364 4.377L1.5 15L3.5 16.5L9.5 16.5M16.5 7L12.5 7M21 15.5L15 7L9 15.5C8.333 16.5 9.1 18 10.5 18L19.5 18C20.9 18 21.667 16.5 21 15.5Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  </div>
+);
+
+interface UrlFormProps {
   toggleViewDetails: () => void;
-}) {
+}
+
+export default function UrlForm({ toggleViewDetails }: UrlFormProps) {
   const [url, setUrl] = useState("");
   const [customSlug, setCustomSlug] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [showCustomSlug, setShowCustomSlug] = useState(false);
-  const [showQueryDetails, setShowQueryDetails] = useState(false);
 
   const { isPending, mutate, data } = useMutation({
     mutationFn: (data: { originalUrl: string; customSlug?: string }) =>
@@ -26,8 +47,6 @@ export default function UrlForm({
       setError(error.message);
     },
   });
-
-  const isSubmitting = isPending;
 
   const isValidUrl = (urlString: string): boolean => {
     try {
@@ -58,39 +77,11 @@ export default function UrlForm({
     });
   };
 
-  const toggleCustomSlug = () => {
-    setShowCustomSlug(!showCustomSlug);
-    if (showQueryDetails) {
-      setShowQueryDetails(false);
-    }
-  };
-
-  const toggleQueryDetails = () => {
-    toggleViewDetails();
-  };
+  const toggleCustomSlug = () => setShowCustomSlug(!showCustomSlug);
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex items-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-800">URL Shortener</h2>
-        <svg
-          className="w-6 h-6 ml-2 text-blue-500"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M13 7L11.168 4.252C10.283 2.907 8.155 2.977 7.364 4.377L1.5 15L3.5 16.5L9.5 16.5M16.5 7L12.5 7M21 15.5L15 7L9 15.5C8.333 16.5 9.1 18 10.5 18L19.5 18C20.9 18 21.667 16.5 21 15.5Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
+      <Header />
       <p className="mb-6 text-gray-600">Enter the URL to shorten</p>
 
       {error && (
@@ -130,7 +121,7 @@ export default function UrlForm({
           </button>
           <button
             type="button"
-            onClick={toggleQueryDetails}
+            onClick={toggleViewDetails}
             className="text-sm text-blue-600 hover:underline"
           >
             Query URL Details
@@ -165,11 +156,11 @@ export default function UrlForm({
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isPending}
           className={`w-full px-4 py-3 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 
-              ${isSubmitting ? "opacity-75 cursor-not-allowed" : ""}`}
+              ${isPending ? "opacity-75 cursor-not-allowed" : ""}`}
         >
-          {isSubmitting ? "Processing..." : "Shorten"}
+          {isPending ? "Processing..." : "Shorten"}
         </button>
       </form>
 

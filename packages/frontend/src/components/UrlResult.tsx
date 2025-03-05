@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_URL } from "../services/api";
 
 interface UrlResultProps {
   shortUrl: string;
@@ -8,9 +9,10 @@ interface UrlResultProps {
 export default function UrlResult({ shortUrl, originalUrl }: UrlResultProps) {
   const [copied, setCopied] = useState(false);
 
+  const shortUrlWithBaseUrl = API_URL + shortUrl;
   const copyToClipboard = async () => {
     try {
-      await navigator.clipboard.writeText(shortUrl);
+      await navigator.clipboard.writeText(shortUrlWithBaseUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -33,12 +35,12 @@ export default function UrlResult({ shortUrl, originalUrl }: UrlResultProps) {
         <p className="mb-1 text-sm text-gray-600">Short URL:</p>
         <div className="flex mb-4">
           <a
-            href={shortUrl}
+            href={shortUrlWithBaseUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="block p-2 mr-2 overflow-hidden text-blue-600 bg-gray-100 rounded grow hover:underline"
           >
-            {shortUrl}
+            {shortUrlWithBaseUrl}
           </a>
           <button
             onClick={copyToClipboard}

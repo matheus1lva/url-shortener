@@ -53,7 +53,7 @@ let UrlService = class UrlService {
         }
         return {
             originalUrl: url.originalUrl,
-            shortUrl: `${process.env.BASE_URL || 'http://localhost:3000'}/${url.slug}`,
+            shortUrl: `/shorten/${url.slug}`,
             slug: url.slug,
             visits: url.visits,
             createdAt: url.createdAt,
