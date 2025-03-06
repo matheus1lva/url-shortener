@@ -1,19 +1,18 @@
-FROM node:20-alpine AS development
+FROM node:22-alpine as build
 
 WORKDIR /app
 
 # Copy package.json and pnpm-lock.yaml
-COPY package*.json ./
-
-# Install dependencies including development ones
-RUN npm install -g pnpm && \
-    pnpm install
-
-# Copy source code
 COPY . .
 
-# Expose the port
+RUN npm i -g pnpm && pnpm install
+
+RUN pnpm build
+
+FROM node:22-alpine as production
+
+COPY --from=build /app/dist ./dist
+
 EXPOSE 5173
 
-# Start the development server
-CMD ["pnpm", "run", "dev", "--host"] 
+CMD ["npx", "http-server", "-p", "5173", "./dist"]
