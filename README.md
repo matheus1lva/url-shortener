@@ -44,7 +44,7 @@ git clone <repository-url>
 cd url-shortener
 
 # Start the application with Docker Compose
-docker-compose up
+docker-compose up -d postgres
 ```
 
 This will start:
@@ -74,6 +74,8 @@ pnpm run dev
 - `POST /api/shorten` - Create a shortened URL
 - `GET /:slug` - Redirect to the original URL
 - `GET /api/url/:slug` - Get details about a shortened URL
+
+Aside from this small doc over here, when you start the backend and go to `http://localhost:3000/api/docs` you will see a swagger, containing examples and more documentation.
 
 ## License
 
