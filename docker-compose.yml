@@ -13,37 +13,37 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  # backend:
-  #   build:
-  #     context: ./packages/backend
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     - DATABASE_URL=postgres://postgres:postgres@postgres:5432/url_shortener
-  #     - BASE_URL=http://localhost:3000
-  #     - FRONTEND_URL=http://localhost:5173
-  #   depends_on:
-  #     - postgres
-  #   volumes:
-  #     - ./packages/backend:/app
-  #     - /app/node_modules
+  backend:
+    build:
+      context: ./packages/backend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/url_shortener
+      - BASE_URL=http://localhost:3000
+      - FRONTEND_URL=http://localhost:5173
+    depends_on:
+      - postgres
+    volumes:
+      - ./packages/backend:/app
+      - /app/node_modules
 
-  # frontend:
-  #   build:
-  #     context: ./packages/frontend
-  #     dockerfile: Dockerfile
-  #   restart: always
-  #   ports:
-  #     - "5173:5173"
-  #   environment:
-  #     - VITE_API_URL=http://localhost:3000
-  #   volumes:
-  #     - ./packages/frontend:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     - backend
+  frontend:
+    build:
+      context: ./packages/frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    volumes:
+      - ./packages/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
 
 volumes:
   postgres_data:
